@@ -9,8 +9,9 @@ if [ -e "$FILE" ]; then
     CURRENT_DATE_SECONDS=$(date +%s)
     if [ "$CURRENT_DATE_SECONDS" -ge "$EXPIRATION_DATE_SECONDS" ]; then
         echo "The certificate has expired."
-    else
         bash ./gen-ssl.sh
+    else
+        echo "The certificate is ok."
     fi
 else
     bash ./gen-ssl.sh
@@ -19,4 +20,4 @@ fi
 docker kill agent || true
 docker rm agent || true
 docker pull registry.metal8.cloud/cloudrevive-agent:1.0.0
-docker run -p 80:80 -p 443:443 -v $SCRIPT_DIR/certs:/app/certs -d --restart unless-stopped --name agent registry.metal8.cloud/cloudrevive-agent:1.0.0
+docker run -p 80:8080 -p 443:8443 -v $SCRIPT_DIR/certs:/app/certs -d --restart unless-stopped --name agent registry.metal8.cloud/cloudrevive-agent:1.0.0
